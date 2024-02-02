@@ -17,6 +17,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { InputSchema } from "@/schemas";
+import { InputAction } from "@/actions/input-action";
 
 export const InputForm = () => {
   const form = useForm<z.infer<typeof InputSchema>>({
@@ -27,8 +28,13 @@ export const InputForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof InputSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof InputSchema>) => {
+    try {
+      const formData = await InputAction(values);
+      console.log(formData, "Success created data");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
