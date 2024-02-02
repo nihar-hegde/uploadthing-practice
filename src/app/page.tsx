@@ -1,4 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
+import { AllData } from "@/components/all-data";
 import Link from "next/link";
 
 export default function Home() {
@@ -8,6 +9,10 @@ export default function Home() {
       <Link href={"/form"} className={buttonVariants({ variant: "default" })}>
         Go TO Form
       </Link>
+
+      <div>
+        <AllData />
+      </div>
     </main>
   );
 }
