@@ -44,42 +44,45 @@ export function FileUploader({
   };
 
   return (
-    <div
-      {...getRootProps()}
-      className="flex-center bg-dark-3 flex h-72 cursor-pointer flex-col overflow-hidden rounded-xl bg-grey-50"
-    >
-      <input {...getInputProps()} className="cursor-pointer" />
+    <div>
+      <div className="flex flex-col items-center justify-center h-72 cursor-pointer overflow-hidden rounded-xl bg-grey-50">
+        {/* create a separate div element for the drop zone and apply the getRootProps function to it */}
+        <div
+          {...getRootProps()}
+          className="flex items-center justify-center flex-1"
+        >
+          <input {...getInputProps()} className="cursor-pointer" />
+          <div className="flex items-center justify-center flex-col py-5 text-grey-500">
+            <UploadCloud />
+            <h3 className="mb-2 mt-2">Drag photos here</h3>
 
-      {imageUrls.length > 0 ? (
-        <div className="flex h-full w-full flex-1 justify-center flex-wrap">
+            <Button type="button" className="rounded-full">
+              Select from computer
+            </Button>
+          </div>
+        </div>
+      </div>
+      {imageUrls[0] !== "" ? (
+        <div className="flex flex-wrap justify-center items-center bg-gray-100 p-4 rounded-lg shadow-md">
           {imageUrls.map((imageUrl, index) => (
-            <div key={index} className="relative w-24 h-6 m-0.5">
+            <div key={index} className="relative w-24 h-24 m-2">
               <img
                 src={imageUrl}
                 alt={`image ${index + 1}`}
-                width={105}
-                height={24}
-                className="object-cover object-center"
+                width={96}
+                height={96}
+                className="object-cover object-center rounded-lg"
               />
-              <Button
-                className="absolute top-1.5 right-1.5 bg-red-500 text-white p-1 rounded-full"
+              <button
+                className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
                 onClick={() => handleDelete(index)}
               >
                 <X />
-              </Button>
+              </button>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="flex-center flex-col py-5 text-grey-500">
-          <UploadCloud />
-          <h3 className="mb-2 mt-2">Drag photos here</h3>
-          <p className="p-medium-12 mb-4">SVG, PNG, JPG</p>
-          <Button type="button" className="rounded-full">
-            Select from computer
-          </Button>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

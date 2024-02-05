@@ -19,15 +19,18 @@ import { Button } from "../ui/button";
 import { InputSchema } from "@/schemas";
 import { InputAction } from "@/actions/input-action";
 import { FileUploader } from "./file-uploader";
+import { useUploadThing } from "@/utils/uploadthing";
 
 export const InputForm = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const { startUpload } = useUploadThing("imageUploader");
+
   const form = useForm<z.infer<typeof InputSchema>>({
     resolver: zodResolver(InputSchema),
     defaultValues: {
       name: "",
       description: "",
-      images: "",
+      images: [],
     },
   });
 
@@ -37,10 +40,26 @@ export const InputForm = () => {
   });
 
   const imageUrls = Array.isArray(images) ? images : [images];
-  console.log("IMAGEURL:", imageUrls);
+
   const onSubmit = async (values: z.infer<typeof InputSchema>) => {
     try {
-      const formData = await InputAction(values);
+      let uploadedImageUrl = values.images;
+
+      if (files.length > 0) {
+        const uploadedImages = await startUpload(files);
+
+        if (!uploadedImages) {
+          return;
+        }
+
+        uploadedImageUrl = uploadedImages.map((image) => image.url); // Extract URLs
+      }
+      const { name, description } = values;
+      const formData = await InputAction({
+        name: name,
+        description: description,
+        images: uploadedImageUrl,
+      });
       console.log(formData, "Success created data");
     } catch (error) {
       console.log(error);

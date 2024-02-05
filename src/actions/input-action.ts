@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 interface InputActionProps {
   name: string;
   description: string;
+  images: string[];
 }
 export const InputAction = async (data: InputActionProps) => {
   try {
@@ -13,6 +14,7 @@ export const InputAction = async (data: InputActionProps) => {
       data: {
         name: data.name,
         description: data.description,
+        images: data.images,
       },
     });
     revalidatePath("/");
