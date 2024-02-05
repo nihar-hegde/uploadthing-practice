@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { CardWrapper } from "../card-wrapper";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -18,16 +18,26 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { InputSchema } from "@/schemas";
 import { InputAction } from "@/actions/input-action";
+import { FileUploader } from "./file-uploader";
 
 export const InputForm = () => {
+  const [files, setFiles] = useState<File[]>([]);
   const form = useForm<z.infer<typeof InputSchema>>({
     resolver: zodResolver(InputSchema),
     defaultValues: {
       name: "",
       description: "",
+      images: "",
     },
   });
 
+  const images = useWatch({
+    control: form.control,
+    name: "images",
+  });
+
+  const imageUrls = Array.isArray(images) ? images : [images];
+  console.log("IMAGEURL:", imageUrls);
   const onSubmit = async (values: z.infer<typeof InputSchema>) => {
     try {
       const formData = await InputAction(values);
@@ -75,6 +85,24 @@ export const InputForm = () => {
                         {...field}
                         placeholder="Description..."
                         disabled={form.formState.isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Images</FormLabel>
+                    <FormControl>
+                      <FileUploader
+                        onFieldChange={field.onChange}
+                        imageUrls={imageUrls}
+                        files={files}
+                        setFiles={setFiles}
                       />
                     </FormControl>
                     <FormMessage />
